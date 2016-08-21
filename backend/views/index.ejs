@@ -1,13 +1,23 @@
+<!-- views/index  -->
+
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/css/style.css' />
-  </head>
-  <body>
-    <div id="root">
-    </div>
+    <% include ./partials/head %>
+</head>
+<body class="container">
+    <header>
+        <% include ./partials/header %>
+    </header>
+    <main>
+      <div id="root">
+      </div>
+    </main>
+    <footer>
+        <% include ./partials/footer %>
+    </footer>
     <script type="text/javascript" src="bundle.js">
     </script>
-  </body>
+</body>
 </html>

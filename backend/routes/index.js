@@ -5,5 +5,8 @@ var router = express.Router();
 router.get('/', (req, res) => {
   res.render('index', { title: 'UserAuthStarter' });
 });
-
+/* GET home page. */
+router.get('/about', (req, res) => {
+  res.render('about', { title: '关于我们' });
+});
 module.exports = router;
