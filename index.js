@@ -6,18 +6,27 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import routes from './backend/routes/index';
 import users from './backend/routes/users';
+import helmet from 'helmet';
+import csrf from 'csurf';
 const app = express();
+
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, './backend/views'));
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
-// app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// uncomment after placing your favicon in /public
+// app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(helmet());
+app.use(csrf())
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
