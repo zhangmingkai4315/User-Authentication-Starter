@@ -151,27 +151,53 @@ router.post(url['User_Register_URL'], function(req, res) {
 });
 
 router.get(url['User_NotActive_URL'],(req,res) =>{
-  res.render('users/notactive',{
+  res.render('users/notactived',{
     user:req.user,
     message:message['NotActived'],
     url:url
   });
 });
 
+router.get(url['User_Active_URL'],(req,res) => {
+  let uuid=req.query.uuid;
+  let username=req.query.user;
+  console.log(username,uuid)
+  if(uuid&&username){
+    User.findOneAndUpdate(
+      {"status":"NotActived","confirm_code":uuid,"username":username},
+      {$set:{"status":"Actived"}},
+      {"upsert":false,"new":true},(err,user) => {
+        if(err) {
+          res.render('users/notactived',{
+            user:req.user,
+            message:message['Confirm_Email_Fail'],
+            url:url
+          });
+        }else{
+          res.render('users/actived',{
+            user:req.user,
+            message:message['Confirm_Email_Success'],
+            url:url
+          });
+        }
+      })
+  }
+});
+
 
 
 
 /* GET users change_password page. */
-router.get('/change_password', (req,res) => {
-  res.render('users/change_password_from_page',{
+router.get(url['User_Change_Password'], (req,res) => {
+  res.render('users/change_password',{
     csrfToken: req.csrfToken(),
     url:url
   });
 });
 
 /* GET users change_password_from_email page. */
-router.get('/change_password_from_email', (req,res) => {
-  res.render('users/change_password_from_email',{
+router.get(url['User_Forget_Password'], (req,res) => {
+  res.render('users/forget_password',{
     csrfToken: req.csrfToken(),
     url:url
   });

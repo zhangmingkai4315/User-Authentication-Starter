@@ -1,4 +1,4 @@
-<!-- views/user/change_password_from_email.ejs -->
+<!-- views/user/actived.ejs -->
 
 <!DOCTYPE html>
 <html>
@@ -10,12 +10,9 @@
         <% include ../partials/header %>
     </header>
     <main>
-        <div class="jumbotron">
-            <h1>This is page for change password</h1>
+        <div class="well">
+            <h5><%= message%></h5>
         </div>
-
-        <input type="hidden" name="_csrf" value="<%= csrfToken%>">
-
     </main>
     <footer>
         <% include ../partials/footer %>
