@@ -5,7 +5,9 @@ const Schema = mongoose.Schema;
 const User = new Schema({
     username: String,
     password: String,
-    role:{type:String,default:'user'}
+    role:{type:String,default:'user'},
+    status:{type:String,default:'NotActived'},
+    confirm_code:{type:String,default:''},
 });
 
 User.plugin(passportLocalMongoose);

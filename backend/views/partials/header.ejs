@@ -2,18 +2,21 @@
     <div class="container-fluid">
 
         <div class="navbar-header">
-            <a class="navbar-brand" href="/">
-                <span class="glyphicon glyphicon glyphicon-tree-deciduous"></span>
+            <a class="navbar-brand" href=<%= url['Home_Page_URL'] %> >
+                <i class="fa fa-pied-piper" aria-hidden="true"></i>
                 登录系统实例
             </a>
         </div>
 
         <ul class="nav navbar-nav">
-            <li><a href="/">首页</a></li>
-            <li><a href="/about">关于</a></li>
-            <li><a href="/users/login">用户登录</a></li>
-            <li><a href="/users/register">用户注册</a></li>
-            <li><a href="/users/logout">用户退出</a></li>
+            <li><a href=<%= url['Home_Page_URL'] %> ><i class="fa fa-home" aria-hidden="true"></i>首页</a></li>
+            <li><a href="/about">关于我们</a></li>
+            <% if(user){%>
+              <li><a href=<%= url['User_Logout_URL'] %> ><i class="fa fa-sign-out" aria-hidden="true"></i>用户退出</a></li>
+            <%}else{%>
+              <li><a href=<%= url['User_Login_URL'] %> >用户登录</a></li>
+              <li><a href=<%= url['User_Register_URL'] %> >用户注册</a></li>
+            <%}%>
         </ul>
 
     </div>
