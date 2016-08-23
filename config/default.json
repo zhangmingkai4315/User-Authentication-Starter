@@ -1,0 +1,32 @@
+{
+  "Database":{
+    "mongoDB":{
+      "host":"localhost",
+      "port":"27017",
+      "database":"UAS"
+    }
+  },
+  "URL":{
+    "Home_Page_URL":"/",
+    "User_Login_URL":"/users/login",
+    "User_Register_URL":"/users/register",
+    "User_Profile_URL":"/users/profile"
+  },
+  "Message":{
+    "Login-Failure":"用户名或密码无效!",
+    "Login-Success":"欢迎回来!",
+    "User_Exists_Message":"用户已存在，请重新输入用户名",
+    "Unknown_Error_Message":"服务器无法完成请求，请稍后再试",
+    "Re_Authentication_Message":"请登陆系统后查看相关页面",
+    "Invalid_Email":"输入邮箱格式有误",
+    "Invalid_PASSWORD_INPUT":"两次输入的密码不一致",
+    "Invalid_Password_Length":"密码长度必须是６-12位"
+  },
+  "SecretThings":{
+    "Session-Secret":"IWILLNOTTELLYOUTHISSECECTWORDS"
+  },
+  "PageCustom":{
+    "Home-Page-Title":"UAS App",
+    "About-Me-Title":"About Me"
+  }
+}

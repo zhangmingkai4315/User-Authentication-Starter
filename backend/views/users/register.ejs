@@ -1,0 +1,39 @@
+<!-- views/user/regist.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <main class="row">
+          <form id="regist" class="col-lg-5 col-md-6 col-sm-12" method="post">
+            <div class="form-group">
+              <label for="exampleInputEmail1">个人邮箱</label>
+              <input type="email" class="form-control" id="user_email" name="username" >
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">密码</label>
+              <input type="password" class="form-control" id="user_password1" name="password" >
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">确认密码</label>
+              <input type="password" class="form-control" id="user_password2" name="confirm_password">
+            </div>
+            <input type="hidden" name="_csrf" value="<%= csrfToken%>">
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">注册</button>
+            </div>
+            <% if(message){%>
+                <div class="alert alert-danger" role="alert"><%= message%></div>
+            <%}%>
+          </form>
+    </main>
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+</body>
+</html>
