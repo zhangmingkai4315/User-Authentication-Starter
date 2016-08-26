@@ -38,6 +38,7 @@
     "ejs": "~2.2.3",
     "express": "^4.14.0",
     "express-session": "^1.14.0",
+    "express-winston": "^2.0.0",
     "helmet": "^2.1.2",
     "mongoose": "^4.5.9",
     "morgan": "~1.5.1",
@@ -49,7 +50,8 @@
     "react-dom": "^15.3.1",
     "serve-favicon": "~2.2.0",
     "uuid": "^2.0.2",
-    "validator": "^5.5.0"
+    "validator": "^5.5.0",
+    "winston": "^2.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.13.2",

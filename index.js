@@ -1,7 +1,8 @@
 import express from 'express';
 import path from 'path';
 import favicon from 'serve-favicon';
-import logger from 'morgan';
+import expressWinston from 'express-winston';
+import {logger,error_logger} from './backend/lib/logger';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import routes from './backend/routes/index';
@@ -40,8 +41,6 @@ passport.deserializeUser(User.deserializeUser());
 // view engine setup
 app.set('views', path.join(__dirname, './backend/views'));
 app.set('view engine', 'ejs');
-
-app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -53,7 +52,9 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+if (app.get('env')  === 'development') {
+  app.use(expressWinston.logger(logger));
+}
 
 app.use('/', routes);
 app.use('/users', users);
@@ -64,6 +65,7 @@ app.use('/users', users);
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
+
     app.use((err, req, res) => {
         res.status(err.status || 500);
         res.render('error', {
@@ -72,10 +74,11 @@ if (app.get('env') === 'development') {
         });
     });
 }
-
+app.use(expressWinston.errorLogger(error_logger));
 // production error handler
 // no stacktraces leaked to user
 app.use((err, req, res) => {
+
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
