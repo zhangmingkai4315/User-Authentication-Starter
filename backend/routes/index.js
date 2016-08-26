@@ -126,11 +126,9 @@ router.post(url['User_Register_URL'], function(req, res) {
               {upsert:false},
               (err)=>{
                 if(err){
-                  console.log(err);
                   req.flash('message',message['Unknown_Error_Message']);
                   res.redirect(url['User_Register_URL']);
                 }else{
-                  console.log('Send email....')
                   send_confirm_email(req.user['username'],confirm_code,(err)=>{
                     if(err){
                         req.flash('message',{message:message['Email_Send_Fail'],error:true});
@@ -159,7 +157,6 @@ router.get(url['User_NotActive_URL'],(req,res) =>{
 router.get(url['User_Active_URL'],(req,res) => {
   let uuid=req.query.uuid;
   let username=req.query.user;
-  console.log(username,uuid)
   if(uuid&&username){
     User.findOneAndUpdate(
       {"status":"NotActived","confirm_code":uuid,"username":username},
@@ -186,14 +183,68 @@ router.get(url['User_Active_URL'],(req,res) => {
 
 
 /* GET users change_password page. */
-router.get(url['User_ChangePassword_URL'], (req,res) => {
+router.get(url['User_ChangePassword_URL'], auth_process,(req,res) => {
   res.render('users/change_password',{
     csrfToken: req.csrfToken(),
     url:url,
-    user:req.user
+    user:req.user,
+    message:req.flash('message')[0]
   });
 });
 
+
+/* POST users change_password page. */
+router.post(url['User_ChangePassword_URL'], auth_process,(req,res) => {
+  let password=req.body.password;
+  let new_password=req.body.new_password;
+  let new_password_confirm=req.body.new_password_confirm;
+  if(typeof password === 'undefined'||
+     typeof new_password === 'undefined'||
+     typeof new_password_confirm === 'undefined'){
+    req.flash('message',{message:message['Empty_Input'],error:true});
+    return res.redirect(url['User_ChangePassword_URL']);
+  }
+  if(new_password!==new_password_confirm){
+    req.flash('message',{message:message['Invalid_PASSWORD_INPUT'],error:true});
+    return res.redirect(url['User_ChangePassword_URL']);
+  }
+  if(validator.isLength(new_password,{min:6,max:12})===false){
+    req.flash('message',{message:message['Invalid_Password_Length'],error:true});
+    return res.redirect(url['User_ChangePassword_URL']);
+  }
+
+  User.authenticate()(req.user.username,password,(err,user) =>{
+    if(err){
+      req.flash('message',{message:message['Invalid_Old_Password'],error:true});
+      return res.redirect(url['User_ChangePassword_URL']);
+    }else{
+      user.setPassword(new_password,(err,user) =>{
+        if(err){
+          req.flash('message',{message:message['Unknown_Error_Message'],error:true});
+          return res.redirect(url['User_ChangePassword_URL']);
+        }else{
+          user.save((err)=>{
+            if(err){
+              req.flash('message',{message:message['Unknown_Error_Message'],error:true});
+              return res.redirect(url['User_ChangePassword_URL']);
+            }else{
+              res.render('users/success_change_info',{
+                user:req.user,
+                message:{message:message['Success_Change_Password'],error:false},
+                url:url
+              });
+            }
+          })
+
+        }
+      })
+    }
+  })
+
+
+
+
+});
 /* GET users change_password_from_email page. */
 router.get(url['User_ForgetPassword_URL'], (req,res) => {
   res.render('users/forget_password',{
@@ -291,18 +342,25 @@ router.post(url['User_ResetPassword_Email_URL'],(req,res) => {
           if(doc) {
             // 查看
             User.findOne({'username':username},(err,user) =>{
-              console.log(user);
               if(user){
                 user.setPassword(password1,(err,user) =>{
                   if(err){
                     req.flash('message',{message:message['Unknown_Error_Message'],error:true});
                     return res.redirect(url['User_ResetPassword_Email_URL']+'?user='+username+'&uuid='+session_uuid);
                   }else{
-                    res.render('users/success_change_info',{
-                      user:req.user,
-                      message:{message:message['Success_Change_Password'],error:false},
-                      url:url
-                    });
+                    user.save((err)=>{
+                      if(err){
+                        req.flash('message',{message:message['Unknown_Error_Message'],error:true});
+                        return res.redirect(url['User_ResetPassword_Email_URL']+'?user='+username+'&uuid='+session_uuid);
+                      }else{
+                        res.render('users/success_change_info',{
+                          user:req.user,
+                          message:{message:message['Success_Change_Password'],error:false},
+                          url:url
+                        });
+                      }
+                    })
+
                   }
                 })
               }else{
