@@ -11,6 +11,7 @@ import {send_confirm_email,send_reset_password_email} from '../lib/email';
 
 const message = config.get('Message');
 const url = config.get('URL');
+const questions = config.get('Questions');
 const page_custom = config.get('PageCustom');
 const router = express.Router();
 // setting csrf protection
@@ -83,10 +84,12 @@ router.get(url['User_Profile_URL'],auth_process,(req,res) =>{
 
 /* GET users regist page. */
 router.get(url['User_Register_URL'], (req,res) => {
+
   res.render('users/register',{
     csrfToken: req.csrfToken(),
     user: req.user,
     message :req.flash('message')[0],
+    questions:questions,
     url:url
   });
 });
@@ -95,16 +98,37 @@ router.post(url['User_Register_URL'], function(req, res) {
     let username=req.body.username;
     let password=req.body.password;
     let confirm_password=req.body.confirm_password;
-    if(typeof confirm_password === 'undefined'||confirm_password!==password){
+    let selected_question=req.body.selected_question;
+    let answer_question=req.body.answer_question;
+    if( typeof username === 'undefined'||
+        typeof password === 'undefined'||
+        typeof confirm_password === 'undefined'||
+        typeof selected_question === 'undefined'||
+        typeof answer_question === 'undefined'){
+          req.flash('message',{message:message['Empty_Input'],error:true});
+          return res.redirect(url['User_Register_URL']);
+    }
+
+    if(confirm_password!==password){
       req.flash('message',{message:message['Invalid_PASSWORD_INPUT'],error:true});
       return res.redirect(url['User_Register_URL']);
     }
+    username=username.trim();
+    password=password.trim();
+    confirm_password=confirm_password.trim();
+    answer_question=answer_question.trim();
+
     if(validator.isEmail(username)===false){
       req.flash('message',{message:message['Invalid_Email'],error:true});
       return res.redirect(url['User_Register_URL']);
     };
     if(validator.isLength(password,{min:6,max:12})===false){
       req.flash('message',{message:message['Invalid_Password_Length'],error:true});
+      return res.redirect(url['User_Register_URL']);
+    }
+
+    if(validator.isLength(answer_question,{min:1,max:120})===false){
+      req.flash('message',{message:message['Invalid_Question_Answer_Length'],error:true});
       return res.redirect(url['User_Register_URL']);
     }
     //
@@ -122,7 +146,8 @@ router.post(url['User_Register_URL'], function(req, res) {
               res.redirect(url['User_Register_URL']);
             }else{
               let confirm_code=uuid.v4();
-              User.findOneAndUpdate({_id:req.user['_id']},{confirm_code:confirm_code},
+              User.findOneAndUpdate({_id:req.user['_id']},
+              {confirm_code:confirm_code,selected_question:selected_question,answer_question:answer_question},
               {upsert:false},
               (err)=>{
                 if(err){
@@ -235,15 +260,10 @@ router.post(url['User_ChangePassword_URL'], auth_process,(req,res) => {
               });
             }
           })
-
         }
       })
     }
   })
-
-
-
-
 });
 /* GET users change_password_from_email page. */
 router.get(url['User_ForgetPassword_URL'], (req,res) => {
@@ -251,20 +271,45 @@ router.get(url['User_ForgetPassword_URL'], (req,res) => {
     csrfToken: req.csrfToken(),
     url:url,
     user:req.user,
-    message:req.flash('message')[0]
+    message:req.flash('message')[0],
+    questions:questions
   });
 });
 
 router.post(url['User_ForgetPassword_URL'],(req,res) =>{
   let username=req.body.username;
+  let selected_question=req.body.selected_question;
+  let answer_question=req.body.answer_question;
+
+
+  if(typeof username==='undefined'||
+    typeof username==='undefined'||
+    typeof answer_question==='undefined'
+  ){
+    req.flash('message',{message:message['Empty_Input'],error:true});
+    return res.redirect(url['User_ForgetPassword_URL']);
+  }
+  username=username.trim()
+  answer_question=answer_question.trim();
+
+
   if(validator.isEmail(username)===false){
     req.flash('message',{message:message['Invalid_Email'],error:true});
     return res.redirect(url['User_ForgetPassword_URL']);
   };
 
   User.findOne({'username':username},(err,user) => {
+    if(err){
+      req.flash('message',{message:message['Unknown_Error_Message'],error:true});
+      return res.redirect(url['User_ForgetPassword_URL']);
+    }
     if(user){
       // send the mail to user, but need save the staus to database.
+     if(user.selected_question!==parseInt(selected_question)||
+        user.answer_question!==answer_question){
+          req.flash('message',{message:message['Invalid_Answer_Input'],error:true});
+          return res.redirect(url['User_ForgetPassword_URL']);
+      }
       let session_uuid=uuid.v4();
       let cps= new ChangePasswordSession({'username':user.username,'session':session_uuid});
       cps.save((err,doc)　=> {
@@ -283,7 +328,7 @@ router.post(url['User_ForgetPassword_URL'],(req,res) =>{
             }
           })
         }
-      });
+      })
     }else{
       req.flash('message',{message:message['Not_Exist_User'],error:true});
       return res.redirect(url['User_ForgetPassword_URL']);
