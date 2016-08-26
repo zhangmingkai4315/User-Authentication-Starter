@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 
 const User = new Schema({
     username: {type:String,required: true},
-    password: {type:String,required: true},
     role:{type:String,default:'user'},
     status:{type:String,default:'NotActived'},
     confirm_code:{type:String,default:''},
