@@ -6,6 +6,8 @@ const url=config.get('URL');
 
 const email_string='smtp://'+email['username']+':'+email['password']+'@'+email['smtp_server'];
 const transporter=nodemailer.createTransport(email_string);
+const Promise=require('bluebird');
+
 
 const send_confirm_email = (user,uuid,cb) =>{
   let confirm_Options = {
@@ -15,9 +17,6 @@ const send_confirm_email = (user,uuid,cb) =>{
   confirm_Options['html']='<h3>'+email['confirm_title']+'</h3><h4><a>'+url['Base_URL']+url['User_Active_URL']+'?user='+user+'&uuid='+uuid+'</a></h4>'
   confirm_Options['subject']=email['confirm_subject'];
   confirm_Options['text']=email['confirm_title'];
-
-  console.log(confirm_Options);
-
   transporter.sendMail(confirm_Options, (error, info) => {
     if(error){
         console.log(error)
@@ -42,5 +41,6 @@ const send_reset_password_email = (user,uuid,cb) =>{
     cb(null,'Message sent: ' + info.response);
   });
 }
-
-export {send_confirm_email,send_reset_password_email};
+const send_confirm_email_asyn=Promise.promisify(send_confirm_email);
+const send_reset_password_email_asyn=Promise.promisify(send_reset_password_email);
+export {send_confirm_email_asyn,send_reset_password_email_asyn };

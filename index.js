@@ -5,30 +5,31 @@ import expressWinston from 'express-winston';
 import {logger,error_logger} from './backend/lib/logger';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+
+import mongoose from 'mongoose';
+mongoose.Promise = require('bluebird');
+import User from './backend/models/User';
 import routes from './backend/routes/index';
 import users from './backend/routes/users';
-import User from './backend/models/User';
+
 import helmet from 'helmet';
-import csrf from 'csurf';
 import config from 'config';
 import passport from 'passport';
-import mongoose from 'mongoose';
 import flash from 'connect-flash';
+
 
 const app = express();
 const LocalStrategy = require('passport-local').Strategy;
 const secret = config.get('SecretThings');
 
-// connect　the mongoDB database
 const database = config.get('Database.mongoDB');
 const db_connect_string='mongodb://'+database.host+':'+database.port+'/'+database.database;
-
 mongoose.connect(db_connect_string,(err) =>{
   if(err){
-    console.log("Connect the database fail")
+    console.log('Connect the database fail')
     process.exit(1);
   }else{
-    console.log("Connect the database success")
+    console.log('Connect the database success')
   }
 });
 
@@ -64,6 +65,7 @@ app.use('/users', users);
 // error handlers
 // development error handler
 // will print stacktrace
+app.use(expressWinston.errorLogger(error_logger));
 if (app.get('env') === 'development') {
 
     app.use((err, req, res) => {
@@ -74,11 +76,8 @@ if (app.get('env') === 'development') {
         });
     });
 }
-app.use(expressWinston.errorLogger(error_logger));
 // production error handler
-// no stacktraces leaked to user
 app.use((err, req, res) => {
-
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,

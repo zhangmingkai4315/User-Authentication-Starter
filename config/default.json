@@ -1,0 +1,75 @@
+{
+  "Database":{
+    "mongoDB":{
+      "host":"localhost",
+      "port":"27017",
+      "database":"UAS"
+    }
+  },
+    "Email":{
+      "username":"uas_test@outlook.com",
+      "password":"123456abc",
+      "smtp_server":"smtp-mail.outlook.com",
+      "confirm_subject":"UVS邮件确认注册",
+      "confirm_title":"点击下面链接完成您的账号创建过程",
+      "reset_password_subject":"UAS重置您的个人密码",
+      "reset_password_title":"点击下面链接完成重置密码操作"
+    },
+    "URL":{
+      "Base_URL":"http://localhost:3000",
+      "Home_Page_URL":"/",
+      "User_Active_URL":"/active",
+      "User_Login_URL":"/login",
+      "User_Register_URL":"/register",
+      "User_Profile_URL":"/profile",
+      "User_NotActive_URL":"/notactived",
+      "User_Logout_URL":"/logout",
+      "User_ChangePassword_URL":"/changepassword",
+      "User_ResetPassword_Email_URL":"/resetpasswdbyemail",
+      "User_ForgetPassword_URL":"/forgetpassword"
+    },
+    "Message":{
+      "Login-Failure":"用户名或密码无效!",
+      "Login-Success":"欢迎回来!",
+      "Invalid_Old_Password":"原始密码输入错误，请重新输入",
+      "User_Exists_Message":"用户已存在，请重新输入用户名",
+      "User_Not_Exist":"用户不存在，请重新检查输入信息",
+      "Empty_Input":"输入字段为空，无法完成后续处理",
+      "Invalid_URL_Param":"输入的url参数无效，重新复制链接后发送请求",
+      "Invalid_Password_Length":"密码长度必须是６-12位",
+      "Invalid_Question_Answer_Length":"问题答案长度必须小于120个字符",
+      "Invalid_Email":"输入邮箱格式有误",
+      "Invalid_PASSWORD_INPUT":"两次输入的密码不一致",
+      "Invalid_Answer_Input":"输入的验证信息有误",
+      "Unknown_Error_Message":"服务器无法完成请求，请稍后再试",
+      "Re_Authentication_Message":"请登陆系统后查看相关页面",
+      "SessionNotExistOrTimeout":"会话信息不存在或已超时失效，请重新发送重置消息或者联系管理员",
+
+      "Not_Exist_User":"该邮箱不存在，无法发送邮件",
+      "Send_ChangePassord_Mail_Success":"邮件已发送，请登陆个人邮箱点击链接后更改密码",
+      "NotActived":"邮件已发送，请先登陆个人邮箱激活账号后再重新登陆系统,谢谢",
+
+      "Success_Change_Password":"密码已修改成功",
+      "Email_Send_Fail":"邮件暂时无法发送，请联系管理员",
+      "Confirm_Email_Fail":"邮件验证失败，请联系管理员",
+      "Confirm_Email_Success":"邮件验证成功，请点击登陆进入系统"
+    },
+    "Questions":[
+      "您最喜欢的一部电影的名字？",
+      "您最喜欢的一本书的名字？",
+      "您最想去的一个地方？",
+      "您最喜欢的偶像的名字？",
+      "您到过的最远的地方是哪里？"
+    ],
+    "Secure":{
+      "__comment__Email_Session_Expire":"重置密码邮件的会话到期时间,默认30分钟",
+      "Email_Session_Expire":1800
+    },
+    "SecretThings":{
+      "Session-Secret":"IWILLNOTTELLYOUTHISSECECTWORDS"
+    },
+    "PageCustom":{
+      "Home-Page-Title":"UAS App",
+      "About-Me-Title":"About Me"
+    }
+}

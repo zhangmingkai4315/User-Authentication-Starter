@@ -21,7 +21,7 @@
             </div>
             <input type="hidden" name="_csrf" value="<%= csrfToken%>">
             <div class="form-group">
-                <button type="submit" class="btn btn-default">登录</button>&nbsp;<a href=<%= url['User_ResetPassword_Email_URL'] %>>忘记密码？</a>
+                <button type="submit" class="btn btn-default">登录</button>&nbsp;<a href=<%= url['User_ForgetPassword_URL'] %>>忘记密码？</a>
             </div>
             <% if(message){%>
                 <div class="alert alert-danger" role="alert"><%= message %></div>
