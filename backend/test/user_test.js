@@ -32,7 +32,7 @@ function ClearDataForTest(cb){
 
 describe('User Authentication Test', () => {
   before((done) => {
-    console.log('\n\tClean The Database For Test\n');
+    console.log('\n>>>>Clean The Database For Test\n');
     if (mongoose.connection.readyState === 0) {
        mongoose.connect(db_connect_string, (err) => {
          if (err) {
@@ -46,23 +46,112 @@ describe('User Authentication Test', () => {
   });
 
   after((done) => {
-    console.log('\n\tTest Done. Try To Disconnect The Database\n');
+    console.log('\n<<<<Test Done. Try To Disconnect The Database\n');
     // in case error:OverwriteModelError: https://github.com/Automattic/mongoose/issues/1251
     mongoose.models = {};
     mongoose.modelSchemas = {};
     mongoose.disconnect();
     return done();
   });
-  describe('User Login With Wrong Params Will Fail Test', () => {
-    it(url['User_Login_URL']+' should return login page',(done)=>{
+
+  describe('User Regist Process', () => {
+
+    it(url['User_Register_URL']+' with invalid csrf token will forbidden 403', (done) =>{
+      var post = {
+        username: '353873605@qq.com',
+        password: 'test_pass',
+        confirm_password:'test_pass_pass',
+        selected_question:0,
+        answer_question:'One Answer'
+      };
+      request.post(url['User_Register_URL'])
+         .set('Accept-Type','text/html')
+         .send(post)
+         .expect('Content-Type', 'text/html; charset=utf-8')
+         .expect(403)
+         .end(done)
+     });
+
+   it(url['User_Register_URL']+' with invalid information will redirect back 302', (done) =>{
+     request.get(url['User_Register_URL'])
+        .expect(200)
+        .end((err,res)=>{
+            let csrf=res.text.match(/name="_csrf" value=\"([\w\W]+?)\"/)[1];
+            let cookies=res.header['set-cookie'];
+            request.post(url['User_Register_URL'])
+                   .set('Accept-Type','text/html')
+                   .set('Cookie',cookies.join(';'))
+                   .redirects(1)
+                   .send({
+                     username: '353873605@qq.com',
+                     password: 'test_pass',
+                     confirm_password:'test_pass_pass',
+                     selected_question:0,
+                     answer_question:'One Answer',
+                     _csrf:csrf
+
+                   })
+                   .expect(function(res){
+                         let reg_string='<div class="alert alert-danger" role="alert">'+message['Invalid_PASSWORD_INPUT']+'<\/div>'
+                         let re = new RegExp(reg_string,'g');
+                         res.text.should.match(re)
+                   })
+                   .expect(200,done);
+         });
+    });
+
+    it(url['User_Register_URL']+' with valid information will success registed', (done) =>{
+
+      request.get(url['User_Register_URL'])
+         .expect(200)
+         .end((err,res)=>{
+             let csrf=res.text.match(/name="_csrf" value=\"([\w\W]+?)\"/)[1];
+             let cookies=res.header['set-cookie'];
+             request.post(url['User_Register_URL'])
+                    .set('Accept-Type','text/html')
+                    .set('Cookie',cookies.join(';'))
+                    .redirects(1)
+                    .send({
+                      username: '353873605@qq.com',
+                      password: '111111',
+                      confirm_password:'111111',
+                      selected_question:0,
+                      answer_question:'One Answer',
+                      _csrf:csrf
+
+                    })
+                    .expect(function(res){
+                          let reg_string=message['NotActived'];
+                          let re = new RegExp(reg_string,'g');
+                          res.text.should.match(re);
+                    })
+                    .expect(200,done);
+          });
+     }).timeout(20000);
+
+});
+
+
+
+  describe('User Login Process', () => {
+
+    it(url['User_Login_URL']+' with invalid csrf token will forbidden 403', (done) =>{
+      var post = {
+        username: 'NotExistUser@gmail.com',
+        password: 'password'
+      };
+      request.post(url['User_Login_URL'])
+         .set('Accept-Type','text/html')
+         .send(post)
+         .expect('Content-Type', 'text/html; charset=utf-8')
+         .expect(403)
+         .end(done)
+     });
+
+    it(url['User_Login_URL']+' with invalid user-pass should return login page with flash',(done)=>{
       request.get(url['User_Login_URL'])
          .expect(200)
          .end((err,res)=>{
-
-             res.text.should.match(/id="login"/);
-             res.text.should.match(/name="username"/);
-             res.text.should.match(/name="password"/);
-             res.text.should.match(/name="_csrf" value=\"[\w\W]+\"/);  //include csrf
              let csrf=res.text.match(/name="_csrf" value=\"([\w\W]+?)\"/)[1];
              let cookies=res.header['set-cookie'];
              request.post(url['User_Login_URL'])
@@ -82,20 +171,6 @@ describe('User Authentication Test', () => {
                     .expect(200,done);
                     // .end(done);
           });
-
+        });
     });
-    it('You will stay at login page  if the form data is invalid', (done) =>{
-      var post = {
-        username: 'NotExistUser@gmail.com',
-        password: 'password'
-      };
-      request.post(url['User_Login_URL'])
-         .set('Accept-Type','text/html')
-         .send(post)
-         .expect('Content-Type', 'text/plain; charset=utf-8')
-         .expect(302)
-         .end(done)
-     });
-  });
-
 });

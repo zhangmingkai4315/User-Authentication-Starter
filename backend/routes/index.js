@@ -66,7 +66,7 @@ router.get(url['User_Login_URL'], csrfProtection ,(req,res) => {
   });
 });
 
-router.post(url['User_Login_URL'],
+router.post(url['User_Login_URL'],csrfProtection,
     passport.authenticate('local',{
         successRedirect: url['User_Profile_URL'],
         failureRedirect: url['User_Login_URL'],
@@ -156,7 +156,7 @@ router.post(url['User_Register_URL'],  csrfProtection ,function(req, res) {
                     res.redirect(url['User_NotActive_URL']);
                 })
                 .catch(()=>{
-                  req.flash('message',message['Unknown_Error_Message']);
+                  req.flash('message',{message:message['Unknown_Error_Message'],error:true});
                   res.redirect(url['User_Register_URL']);
                 })
               }
