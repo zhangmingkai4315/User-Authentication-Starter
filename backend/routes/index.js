@@ -155,7 +155,8 @@ router.post(url['User_Register_URL'],  csrfProtection ,function(req, res) {
                 }).then(()=>{
                     res.redirect(url['User_NotActive_URL']);
                 })
-                .catch(()=>{
+                .catch((err)=>{
+                  console.log(err)
                   req.flash('message',{message:message['Unknown_Error_Message'],error:true});
                   res.redirect(url['User_Register_URL']);
                 })

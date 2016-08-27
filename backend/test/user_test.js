@@ -124,7 +124,10 @@ describe('User Authentication Test', () => {
                           let reg_string=message['NotActived'];
                           let re = new RegExp(reg_string,'g');
                           res.text.should.match(re);
+                          // console.log(res)
+                          res.path.should.include(url['User_NotActive_URL'])
                     })
+                    // .expect('Location',url['User_NotActive_URL'])
                     .expect(200,done);
           });
      }).timeout(20000);
