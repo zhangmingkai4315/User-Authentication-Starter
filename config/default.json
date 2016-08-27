@@ -18,6 +18,7 @@
     "URL":{
       "Base_URL":"http://localhost:3000",
       "Home_Page_URL":"/",
+      "About_URL":"/about",
       "User_Active_URL":"/active",
       "User_Login_URL":"/login",
       "User_Register_URL":"/register",

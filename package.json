@@ -4,6 +4,7 @@
   "description": "使用node做后端的一个用户认证系统",
   "main": "index.js",
   "scripts": {
+    "test:backend": "./node_modules/.bin/mocha --reporter spec -c -w ./backend/test --compilers js:babel-core/register",
     "test:lint": "eslint . --ext .js --ignore-path .gitignore --cache",
     "webpack-watch": "webpack -w",
     "express-server": "node ./entry",
@@ -28,6 +29,8 @@
   },
   "homepage": "https://github.com/zhangmingkai4315/User-Authentication-Starter#readme",
   "dependencies": {
+    "async": "^2.0.1",
+    "aysnc": "^1.4.4",
     "bluebird": "^3.4.3",
     "body-parser": "~1.10.2",
     "config": "^1.21.0",
@@ -56,7 +59,6 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
-    "babel-runtime": "^6.11.6",
     "babel-core": "^6.13.2",
     "babel-eslint": "^6.1.0",
     "babel-loader": "^6.2.5",
@@ -69,9 +71,14 @@
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.11.6",
+    "babel-runtime": "^6.11.6",
+    "chai": "^3.5.0",
     "concurrently": "^2.2.0",
     "eslint": "^3.3.1",
     "eslint-loader": "^1.5.0",
+    "mocha": "^3.0.2",
+    "should": "^11.1.0",
+    "supertest": "^2.0.0",
     "webpack": "^1.13.2"
   }
 }
