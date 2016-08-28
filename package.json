@@ -9,7 +9,7 @@
     "webpack-watch": "webpack -w",
     "express-server": "node ./entry",
     "dev": "./node_modules/.bin/concurrent --kill-others \"npm run webpack-watch\" \"npm run express-server\"",
-    "start": "node server.js"
+    "start": "node entry.js"
   },
   "repository": {
     "type": "git",

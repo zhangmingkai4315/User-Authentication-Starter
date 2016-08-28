@@ -24,15 +24,32 @@ const secret = config.get('SecretThings');
 
 const database = config.get('Database.mongoDB');
 const db_connect_string='mongodb://'+database.host+':'+database.port+'/'+database.database;
-mongoose.connect(db_connect_string,(err) =>{
+mongoose.connect(db_connect_string,{server:{auto_reconnect:true}},(err) =>{
   if(err){
     console.log('Connect the database fail')
     process.exit(1);
-  }else{
-    console.log('Connect the database success')
   }
 });
 
+mongoose.connection.on('connected', function() {
+    console.log('MongoDB connect success!');
+});
+mongoose.connection.on('error', (err)=>{
+  console.log('MongoDB error: '+err);
+  mongoose.disconnect();
+});
+mongoose.connection.on('disconnected', function() {
+    console.log('MongoDB disconnected,Try to reconnect it!');
+    mongoose.connect(db_connect_string, {server:{auto_reconnect:true}});
+});
+
+// Close the Mongoose connection, when receiving SIGINT
+process.on('SIGINT', function() {
+    mongoose.connection.close(function () {
+        console.log('Force to close the MongoDB conection');
+        process.exit(0);
+    });
+});
 // setting the configuration about passport
 
 passport.use(new LocalStrategy(User.authenticate()));
@@ -85,4 +102,10 @@ app.use((err, req, res) => {
     });
 });
 
-app.listen(process.env.PORT||3000);
+
+function start() {
+  const port = process.env.PORT || 3000;
+  app.listen(port);
+  console.log("UAS server listening on port %d in %s mode", port, app.settings.env); //eslint-disable-line
+}
+export {start,app};

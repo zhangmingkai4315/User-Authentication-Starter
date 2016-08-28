@@ -1,2 +1,3 @@
 require('babel-register');
-require('./index');
+const server=require('./index');
+server.start();

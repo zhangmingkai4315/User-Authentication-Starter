@@ -6,7 +6,6 @@ import config from 'config';
 const url = config.get('URL');
 const request = supertest(url['Base_URL']);
 
-
 describe('Webpages View Test',()=>{
   describe('Standard URL Without Authentication',()=>{
     it(url['Home_Page_URL']+' should return 200 StatusCode',(done)=>{
@@ -42,7 +41,7 @@ describe('Webpages View Test',()=>{
           })
          .end(done);
     });
-    it(url['User_ForgetPassword_URL']+' should return 200 StatusCode',(done)=>{
+    it(url['User_ForgetPassword_URL']+' should return 200 StatusCode and forget_password form',(done)=>{
       request.get(url['User_ForgetPassword_URL'])
         .expect(200)
         .expect((res)=>{
