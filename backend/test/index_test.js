@@ -3,6 +3,8 @@ import should from 'should';     // eslint-disable-line
 import { expect } from 'chai';   // eslint-disable-line
 import supertest from 'supertest';
 import config from 'config';
+// import {app} from '../../index';
+
 const url = config.get('URL');
 const request = supertest(url['Base_URL']);
 

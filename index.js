@@ -1,8 +1,9 @@
 import express from 'express';
 import path from 'path';
 import favicon from 'serve-favicon';
+import winston from 'winston'; //eslint-disable-line
 import expressWinston from 'express-winston';
-import {logger,error_logger} from './backend/lib/logger';
+import {development_logger,production_logger,development_error_logger,production_error_logger} from './backend/lib/logger';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
@@ -70,8 +71,10 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 
-if (app.get('env')  === 'development') {
-  app.use(expressWinston.logger(logger));
+if (app.get('env')  === 'production_logger') {
+  app.use(expressWinston.logger(production_logger));
+}else{
+  app.use(expressWinston.logger(development_logger));
 }
 
 app.use('/', routes);
@@ -82,25 +85,27 @@ app.use('/users', users);
 // error handlers
 // development error handler
 // will print stacktrace
-app.use(expressWinston.errorLogger(error_logger));
-if (app.get('env') === 'development') {
-
-    app.use((err, req, res) => {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
+if (app.get('env')  === 'production') {
+  app.use(expressWinston.errorLogger(production_error_logger));
+  // production error handler
+  app.use((err, req, res) => {
+      res.status(err.status || 500);
+      res.render('error', {
+          message: err.message,
+          error: {}
+      });
+  });
+}else{
+  app.use(expressWinston.errorLogger(development_error_logger));
+  app.use((err, req, res) => {
+      res.status(err.status || 500);
+      res.render('error', {
+          message: err.message,
+          error: err
+      });
+  });
 }
-// production error handler
-app.use((err, req, res) => {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
-});
+
 
 
 function start() {

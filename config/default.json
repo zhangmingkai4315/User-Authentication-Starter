@@ -7,13 +7,17 @@
     }
   },
     "Email":{
-      "username":"Your_Email_Address",
-      "password":"Your_Email_Password",
-      "smtp_server":"YourEmail_SMTP_SERVER",
+      "username":"uas_test@outlook.com",
+      "password":"123456abc",
+      "smtp_server":"smtp-mail.outlook.com",
       "confirm_subject":"UVS邮件确认注册",
       "confirm_title":"点击下面链接完成您的账号创建过程",
       "reset_password_subject":"UAS重置您的个人密码",
       "reset_password_title":"点击下面链接完成重置密码操作"
+    },
+    "Logger":{
+      "access_file":"access.log",
+      "error_file":"error.log"
     },
     "URL":{
       "Base_URL":"http://localhost:3000",

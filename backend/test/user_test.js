@@ -4,11 +4,13 @@ import { expect} from 'chai';   // eslint-disable-line
 import supertest from 'supertest';
 import async from 'async';
 import config from 'config';
-const url = config.get('URL');
-const message = config.get('Message');
-const request = supertest(url['Base_URL']);
-
 import mongoose  from 'mongoose';
+
+// import {app} from '../../index';
+
+const url = config.get('URL');
+const request = supertest(url['Base_URL']);
+const message = config.get('Message');
 import {User,ChangePasswordSession} from '../models';
 const model_list=[User,ChangePasswordSession];
 const database = config.get('Database.mongoDB');

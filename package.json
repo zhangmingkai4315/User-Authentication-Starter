@@ -4,8 +4,9 @@
   "description": "使用node做后端的一个用户认证系统",
   "main": "index.js",
   "scripts": {
-    "test:backend": "./node_modules/.bin/mocha --reporter spec -c -w ./backend/test --compilers js:babel-core/register",
+    "test:backend": "./node_modules/.bin/mocha --reporter spec -c ./backend/test --compilers js:babel-core/register",
     "test:lint": "eslint . --ext .js --ignore-path .gitignore --cache",
+    "test":"npm run test:lint && npm run test:backend",
     "webpack-watch": "webpack -w",
     "express-server": "node ./entry",
     "dev": "./node_modules/.bin/concurrent --kill-others \"npm run webpack-watch\" \"npm run express-server\"",
